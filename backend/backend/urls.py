@@ -16,8 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from views import hello_api
+from .views import hello_api
 
 urlpatterns = [
-    path('hello/', hello_api),
+    path('hello/', hello_api, name='hello_api'),
 ]
