@@ -1,4 +1,6 @@
 import React, { useActionState, useRef } from "react";
+import { Link } from "react-router-dom";
+import LoginForm from "./LoginForm.jsx";
 
 const initialState = {
   error: "",
@@ -242,12 +244,12 @@ export default function RegisterForm() {
 
             <p className="mt-6 text-center text-sm text-gray-500">
               Already have an account?{" "}
-              <a
-                href="/login"
+              <Link
+                to="/Login"
                 className="font-bold text-violet-700 hover:underline"
               >
-                Sign In
-              </a>
+                Login In
+              </Link>
             </p>
 
             <div className="mt-6 border-t border-gray-100 pt-4 text-center">
