@@ -29,7 +29,7 @@ export default function LoginForm() {
 
       const data = await response.json();
 
-      if (!response.ok || data.success === false) {
+      if (!response.ok || data.success !== true) {
         return {
           error:
             data.error ||
@@ -205,9 +205,19 @@ export default function LoginForm() {
               {state.error && (
                 <p
                   role="alert"
-                  className="rounded-lg bg-red-50 p-3 text-xs text-red-600"
+                  className="rounded-lg bg-red-50 border border-red-200 p-3 text-xs text-red-600"
                 >
                   {state.error}
+                </p>
+              )}
+
+              {/* Success Message */}
+              {state.success && (
+                <p
+                  role="status"
+                  className="rounded-lg bg-green-50 border border-green-200 p-3 text-xs font-medium text-green-700"
+                >
+                  ✓ {state.success}
                 </p>
               )}
 
