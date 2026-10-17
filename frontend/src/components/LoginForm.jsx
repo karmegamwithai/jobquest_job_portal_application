@@ -1,16 +1,11 @@
-
 import React, { useActionState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 
-const API_URL =
-  import.meta.env.VITE_API_URL ||
-  "http://127.0.0.1:8000/api";
-
 const initialState = {
   error: "",
+  success: "",
 };
-
 export default function LoginForm() {
   const navigate = useNavigate();
   const passwordRef = useRef(null);
@@ -23,49 +18,45 @@ export default function LoginForm() {
     };
 
     try {
-      const response = await fetch(`${API_URL}/login/`, {
+      const response = await fetch("http://127.0.0.1:8000/login/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify(userData),
       });
 
       const data = await response.json();
 
-      if (!response.ok) {
+      if (!response.ok || data.success === false) {
         return {
           error:
+            data.error ||
             data.detail ||
+            data.message ||
             "Invalid username or password.",
+          success: "",
         };
       }
 
-      if (!data.access || !data.refresh) {
-        return {
-          error: "Invalid login response from server.",
-        };
-      }
-
-      // Development only: use HttpOnly cookies for production.
-      sessionStorage.setItem("access_token", data.access);
-      sessionStorage.setItem("refresh_token", data.refresh);
-
-      navigate("/dashboard", { replace: true });
-
-      return { error: "" };
+      return {
+        error: "",
+        success: "Login successful!",
+      };
     } catch (error) {
       console.error("Login error:", error);
 
       return {
-        error: "Unable to connect to Django server.",
+        error: "Unable to connect to the server.",
+        success: "",
       };
     }
   }
 
   const [state, formAction, isPending] = useActionState(
     loginAction,
-    initialState
+    initialState,
   );
 
   const togglePassword = () => {
@@ -80,7 +71,7 @@ export default function LoginForm() {
     if (button) {
       button.setAttribute(
         "aria-label",
-        visibleRef.current ? "Hide password" : "Show password"
+        visibleRef.current ? "Hide password" : "Show password",
       );
     }
   };
@@ -91,8 +82,7 @@ export default function LoginForm() {
     "placeholder:text-gray-400 focus:border-violet-500 " +
     "focus:ring-2 focus:ring-violet-100";
 
-  const labelClass =
-    "mb-1.5 block text-xs font-bold text-gray-700";
+  const labelClass = "mb-1.5 block text-xs font-bold text-gray-700";
 
   return (
     <main className="h-dvh w-full overflow-hidden bg-white font-urbanist">
@@ -119,9 +109,8 @@ export default function LoginForm() {
             </h1>
 
             <p className="mt-4 max-w-md text-sm leading-relaxed text-violet-200 xl:text-base">
-              Sign in to explore exciting opportunities,
-              connect with employers, and take your next
-              step toward your dream career.
+              Sign in to explore exciting opportunities, connect with employers,
+              and take your next step toward your dream career.
             </p>
 
             <div className="mt-6 max-w-md rounded-2xl border border-white/20 bg-white/10 p-4">
@@ -136,8 +125,7 @@ export default function LoginForm() {
           </div>
 
           <p className="relative z-10 text-xs text-violet-300">
-            © {new Date().getFullYear()} JobQuest.
-            All rights reserved.
+            © {new Date().getFullYear()} JobQuest. All rights reserved.
           </p>
         </section>
 
@@ -146,9 +134,7 @@ export default function LoginForm() {
           <div className="my-auto w-full max-w-[410px] shrink-0 py-2">
             {/* Mobile Logo */}
             <div className="mb-4 flex items-center gap-2 lg:hidden">
-              <span className="text-2xl text-violet-700">
-                ✦
-              </span>
+              <span className="text-2xl text-violet-700">✦</span>
               <span className="text-xl font-black text-violet-700">
                 JobQuest.
               </span>
